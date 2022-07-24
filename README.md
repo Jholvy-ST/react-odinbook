@@ -1,4 +1,4 @@
-# react-odinbook
+# React-odinbook
 Simple Facebook copy written in React
 
 ## General info

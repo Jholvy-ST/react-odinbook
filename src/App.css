@@ -459,6 +459,10 @@ a:-webkit-any-link {
 
 .single-comment {
 	display: flex;
+}
+
+.comment-text {
+	display: flex;
 	flex-direction: column;
 	background-color: rgb(82, 80, 83);
 	border-radius: 7px;

@@ -17,10 +17,10 @@ const SinglePost = (props) => {
 	//Adds event listener for the hideOptions function
 	useEffect(() => {
 		const drop = document.getElementById("root");
-		drop.addEventListener('click', hideOptions)	
+		drop.addEventListener('click', hideEditOptions)	
 		
 		return () => {
-			drop.removeEventListener('click', hideOptions)
+			drop.removeEventListener('click', hideEditOptions)
 		} 
 	}, [])
 
@@ -109,14 +109,14 @@ const SinglePost = (props) => {
 	}
 
 	//Changes the height of the textarea depending on the content
-	const autoHeight = (elem) => {
+	const adjustHeight = (elem) => {
 		if (elem) {
 			elem.target.style.height = "1px";
 			elem.target.style.height = (elem.target.scrollHeight)+"px";
 		}
 	}
 
-	const countLikes = (post) => {
+	const renderLikes = (post) => {
 		if (post.likes.length > 0) {
 			if (post.likes.length > 1) {
 				return (
@@ -137,7 +137,7 @@ const SinglePost = (props) => {
 		}
 	}
 
-	const countComments = (post) => {
+	const renderCountedComments = (post) => {
 		if (post.comments.length > 0) {
 			if (post.comments.length > 1) {
 				return (
@@ -158,16 +158,22 @@ const SinglePost = (props) => {
 		}
 	}
 
-	//Renders the comments if there is any
-	const returnComments = (post) => {
+	//Renders the comments if there is any (by default the comments are hidden)
+	const renderComments = (post) => {
 		if (post.comments.length > 0) {
 			return (
 				<div className='comments' ref={commentsRef}>
 					{post.comments.map(comment => 
-						<div key={comment._id} className='single-comment'>
-							<h4>{comment.author.name}</h4>
-							<p>{comment.content}</p>
-						</div>	
+						<div className='single-comment' key={comment._id}>
+							<div>
+								<img src={comment.author.pic} alt="profile-pic" className='profile-pic'/>
+							</div>
+							<div className='comment-text'>
+								<h4>{comment.author.name}</h4>
+								<p>{comment.content}</p>
+							</div>	
+						</div>
+						
 					)}
 				</div>
 			)
@@ -193,7 +199,7 @@ const SinglePost = (props) => {
 		if (user_storage.id === id) {
 			return (
 				<div className='round-div'>
-					<button type="button" className="edit-button" onClick={showOptions}>&#9998;</button>
+					<button type="button" className="edit-button" onClick={showEditOptions}>&#9998;</button>
 					<div className='post-options' id='options' ref={optionsRef}>
 						<div onClick={showEditForm}>
 							<p>Edit</p>
@@ -243,7 +249,7 @@ const SinglePost = (props) => {
 	}
 
 	//Shows the edit options
-	const showOptions = () => {
+	const showEditOptions = () => {
 		const items = Array.from(document.getElementsByClassName("post-options"))
 		
 		if (optionsRef.current.classList.contains("show-c")) {
@@ -259,7 +265,7 @@ const SinglePost = (props) => {
 	}
 
 	//Hides the edit options when the user clicks elsewhere
-	const hideOptions = (e) => {
+	const hideEditOptions = (e) => {
 		if (!e.target.matches('.edit-button')) {
 			//const myDropdown = document.getElementsByClassName("post-options")[0];
 			const items = Array.from(document.getElementsByClassName("post-options"))
@@ -277,7 +283,7 @@ const SinglePost = (props) => {
 			<div key={post._id + post.author.id} className='post'>
 				<div className='post-header'>
 					<div className='post-author'>
-						<img src={post.author.pic} alt="profile-pic" />
+						<img src={post.author.pic} alt="profile-pic"/>
 						<Link to={`user/${post.author._id}`}>	
 							<h4>{post.author.name}</h4>
 						</Link>
@@ -288,8 +294,8 @@ const SinglePost = (props) => {
 					{post.content}
 				</div>
 				{renderImage(post.image)}
-				{countLikes(post)}
-				{countComments(post)}
+				{renderLikes(post)}
+				{renderCountedComments(post)}
 				<div className='like' onClick={likePost}>
 					<h4>Like</h4>
 				</div>
@@ -300,14 +306,14 @@ const SinglePost = (props) => {
 					<form onSubmit={commentPost}>
 						<div className='pic-div'>
 							<img src={post.author.pic} className='profile-pic' alt="profile-pic" />
-							<textarea name='content' rows="1" className="auto_height" placeholder='Write a comment...' onInput={autoHeight} onKeyDown={enterComment} required></textarea>
+							<textarea name='content' rows="1" className="auto_height" placeholder='Write a comment...' onInput={adjustHeight} onKeyDown={enterComment} required></textarea>
 						</div>
 						<div className='full-height'>
 							<button type='submit' id='commentPost' className='blue-button' disabled={isFetching}>Submit</button>
 						</div>
 					</form>
 				</div>
-				{returnComments(post)}
+				{renderComments(post)}
 			</div>
 		)
 	}

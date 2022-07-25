@@ -459,17 +459,39 @@ a:-webkit-any-link {
 
 .single-comment {
 	display: flex;
+	column-gap: 10px;
 }
 
 .comment-text {
 	display: flex;
+	flex: 80%;
 	flex-direction: column;
 	background-color: rgb(82, 80, 83);
 	border-radius: 7px;
 	padding: 8px;
 }
 
-.auto_height { /* CSS */
+.comment-options {
+	display: none;
+	flex-direction: column;
+	position: absolute;
+	transform: translate(-55%, 55%);
+	border-radius: 5px;
+	background-color: rgb(34, 33, 36);
+	z-index: 2;
+}
+
+.comment-options>div {
+	min-width: 80px;
+	padding: 7px;
+	cursor: pointer;
+}
+
+.comment-options>div:hover {
+	background-color: rgb(82, 80, 83);
+}
+
+.auto_height {
 	display: flex;
 	background-color: rgb(82, 80, 83);
 	border-radius: 7px;

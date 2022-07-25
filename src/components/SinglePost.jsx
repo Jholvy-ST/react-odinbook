@@ -11,6 +11,7 @@ const SinglePost = (props) => {
 	
 	const formRef = useRef();
 	const optionsRef = useRef();
+	const commentOptionsRef = useRef(props.post.comments.map(() => useRef()));
 	const commentsRef = useRef();
 	const contentRef = useRef();
 
@@ -163,7 +164,7 @@ const SinglePost = (props) => {
 		if (post.comments.length > 0) {
 			return (
 				<div className='comments' ref={commentsRef}>
-					{post.comments.map(comment => 
+					{post.comments.map((comment, i) => 
 						<div className='single-comment' key={comment._id}>
 							<div>
 								<img src={comment.author.pic} alt="profile-pic" className='profile-pic'/>
@@ -172,8 +173,8 @@ const SinglePost = (props) => {
 								<h4>{comment.author.name}</h4>
 								<p>{comment.content}</p>
 							</div>	
+							{enableCommentEdit(comment, i)}
 						</div>
-						
 					)}
 				</div>
 			)
@@ -195,12 +196,30 @@ const SinglePost = (props) => {
 	}
 
 	//Enables the edition of the post if the current user is the author
-	const enableEdit = (id) => {
+	const enablePostEdit = (id) => {
 		if (user_storage.id === id) {
 			return (
 				<div className='round-div'>
 					<button type="button" className="edit-button" onClick={showEditOptions}>&#9998;</button>
 					<div className='post-options' id='options' ref={optionsRef}>
+						<div onClick={showEditForm}>
+							<p>Edit</p>
+						</div>
+						<div onClick={showDeleteForm}>
+							<p>Delete</p>
+						</div>
+					</div>
+				</div>
+			)
+		}
+	}
+
+	const enableCommentEdit = (comment, index) => {
+		if (user_storage.id === comment.author._id) {
+			return (
+				<div className='round-div'>
+					<button type="button" className="edit-button" id={comment._id + index} onClick={showEditOptionsC}>&#9998;</button>
+					<div className='comment-options' ref={el => commentOptionsRef.current[index] = el}>
 						<div onClick={showEditForm}>
 							<p>Edit</p>
 						</div>
@@ -248,7 +267,7 @@ const SinglePost = (props) => {
 		)
 	}
 
-	//Shows the edit options
+	//Shows the post edit options
 	const showEditOptions = () => {
 		const items = Array.from(document.getElementsByClassName("post-options"))
 		
@@ -264,14 +283,39 @@ const SinglePost = (props) => {
 		}
 	}
 
-	//Hides the edit options when the user clicks elsewhere
-	const hideEditOptions = (e) => {
-		if (!e.target.matches('.edit-button')) {
-			//const myDropdown = document.getElementsByClassName("post-options")[0];
-			const items = Array.from(document.getElementsByClassName("post-options"))
+	//Shows the comment edit options
+	const showEditOptionsC = (e) => {
+		const items = Array.from(document.getElementsByClassName("comment-options"))
+
+		const index = e.target.id.slice(-1)
+		
+		if (commentOptionsRef.current[index].classList.contains("show-c")) {
+			commentOptionsRef.current[index].classList.remove("show-c")
+		} else {
 			for (let i = 0; i < items.length; i++) {
 				if (items[i].classList.contains("show-c")) {
 					items[i].classList.remove("show-c")
+				}
+			}
+			commentOptionsRef.current[index].classList.add("show-c")
+		}
+	}
+
+	//Hides the post edit options when the user clicks elsewhere
+	const hideEditOptions = (e) => {
+		if (!e.target.matches('.edit-button')) {
+			//const myDropdown = document.getElementsByClassName("post-options")[0];
+			const postOptions = Array.from(document.getElementsByClassName("post-options"))
+			for (let i = 0; i < postOptions.length; i++) {
+				if (postOptions[i].classList.contains("show-c")) {
+					postOptions[i].classList.remove("show-c")
+				}
+			}
+
+			const commentOptions = Array.from(document.getElementsByClassName("comment-options"))
+			for (let i = 0; i < commentOptions.length; i++) {
+				if (commentOptions[i].classList.contains("show-c")) {
+					commentOptions[i].classList.remove("show-c")
 				}
 			}
 		}
@@ -288,7 +332,7 @@ const SinglePost = (props) => {
 							<h4>{post.author.name}</h4>
 						</Link>
 					</div>
-					{enableEdit(post.author._id)}
+					{enablePostEdit(post.author._id)}
 				</div>
 				<div className='post-content' ref={contentRef}>				
 					{post.content}

@@ -9,6 +9,16 @@ const AllPosts = (props) => {
 	const [isLoading, setLoading] = useState(true)
 	const [posts, setPosts] = useState([])
 	const [friends, setFriends] = useState([])
+	const [isDesktop, setDesktop] = useState(window.innerWidth > 1380);
+
+  const updateMedia = () => {
+    setDesktop(window.innerWidth > 1380);
+  };
+
+  useEffect(() => {
+    window.addEventListener("resize", updateMedia);
+    return () => window.removeEventListener("resize", updateMedia);
+  });
 	
 	//Loads the content
 	useEffect( () => {	
@@ -205,6 +215,17 @@ const AllPosts = (props) => {
 		)
 	}*/
 
+	const renderFriends = () => {
+		if (isDesktop) {
+			return (
+				<div className='side-bar'>
+					<h3>Friends</h3>
+					<Friends token={props.token} friends={friends}/>
+				</div>
+			)
+		}
+	} 
+
 	
 	//Checks if the data is loaded before rendering the content
 	if (!isLoading) {
@@ -221,11 +242,7 @@ const AllPosts = (props) => {
 						<SinglePost post={post} token={props.token} key={post._id} formRef={props.formRef} mainRef={props.mainRef} setFormData={props.setFormData} selectForm={props.selectForm}/>
 					)}
 				</div>
-				<div className='side-bar'>
-					<h3>Friends</h3>
-					<Friends token={props.token} friends={friends}/>
-				</div>
-				
+				{renderFriends()}
 			</div>
 		)
 	}

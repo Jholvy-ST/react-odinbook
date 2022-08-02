@@ -1,27 +1,29 @@
 import { useEffect } from 'react';
 import { useState, useRef } from 'react';
 import { Link } from 'react-router-dom';
+import CommentForm from './CommentForm';
+import PostComments from './PostComments';
 
 const SinglePost = (props) => {
+	console.log('Re-render')
 
 	const [post, setPost] = useState(props.post)
-	const [comments, setComments] = useState(props.post.comments)
-	const [user_storage, setUserStorage] = useState(JSON.parse(localStorage.getItem('user_data')))
-	const [isFetching, setFetching] = useState(false)
+	const [comments, setComments] = useState(props.post.comments) 
+	const user_storage = JSON.parse(localStorage.getItem('user_data'))
 	
 	const formRef = useRef();
 	const optionsRef = useRef();
-	const commentOptionsRef = useRef(props.post.comments.map(() => useRef()));
+	//const commentOptionsRef = useRef([]);
 	const commentsRef = useRef();
 	const contentRef = useRef();
 
 	//Adds event listener for the hideOptions function
 	useEffect(() => {
-		const drop = document.getElementById("root");
-		drop.addEventListener('click', hideEditOptions)	
+		const main = document.getElementById("root");
+		main.addEventListener('click', hideEditOptions)	
 		
 		return () => {
-			drop.removeEventListener('click', hideEditOptions)
+			main.removeEventListener('click', hideEditOptions)
 		} 
 	}, [])
 
@@ -29,53 +31,6 @@ const SinglePost = (props) => {
 	useEffect(() => {
 		setPost(props.post)
 	}, [props.post])
-
-	//Sumbits a comment when Enter is pressed
-	const enterComment = (e) => {
-		if (e.key === 'Enter' && !e.shiftKey) {
-			e.preventDefault()
-			document.getElementById("commentPost").click();
-		}
-	}
-
-	//Sumbits a comment
-	const commentPost = async (e) => {
-
-		//if (e.key === 'Enter') {
-			e.preventDefault();
-			console.log(e.target.content.value)
-			setFetching(true)
-			const content = e.target.content.value;
-			const payload = { post: props.post._id, content: content, author: user_storage.id }
-			const response = await fetch('https://agile-springs-89726.herokuapp.com/home/comment-post', { 
-				method: 'POST',	
-				mode: 'cors',
-				headers: {
-					"Content-Type": "application/json",
-					Accept: "application/json",
-					Authorization: `Bearer ${props.token}`
-				},
-				body: JSON.stringify(payload)
-			});
-
-			const postData = await response.json();
-			//post.comments.push(postData.comment)
-			/*const newPost = post
-			console.log(newPost)
-			setPost(newPost)*/
-			setFetching(false)
-			const responseComment = postData.comment
-			responseComment.author = postData.author
-			comments.push(responseComment)
-			e.target.content.value = ''
-			//const newComments = comments
-			//setComments(newComments)
-			setPost(prevState => ({
-				...prevState,
-				comments: comments
-		 	}));
-		//}
-	}
 
 	//Adds a like from the current user to the post
 	const likePost = async () => {
@@ -107,17 +62,9 @@ const SinglePost = (props) => {
 
 	const showComments = () => {
 		commentsRef.current.classList.toggle("show-c")
-	}
+	}	
 
-	//Changes the height of the textarea depending on the content
-	const adjustHeight = (elem) => {
-		if (elem) {
-			elem.target.style.height = "1px";
-			elem.target.style.height = (elem.target.scrollHeight)+"px";
-		}
-	}
-
-	const renderLikes = (post) => {
+	const renderLikesCount = (post) => {
 		if (post.likes.length > 0) {
 			if (post.likes.length > 1) {
 				return (
@@ -138,7 +85,7 @@ const SinglePost = (props) => {
 		}
 	}
 
-	const renderCountedComments = (post) => {
+	const renderCommentsCount = (post) => {
 		if (post.comments.length > 0) {
 			if (post.comments.length > 1) {
 				return (
@@ -160,7 +107,7 @@ const SinglePost = (props) => {
 	}
 
 	//Renders the comments if there is any (by default the comments are hidden)
-	const renderComments = (post) => {
+	/*const renderComments = (post) => {
 		if (post.comments.length > 0) {
 			return (
 				<div className='comments' ref={commentsRef}>
@@ -179,7 +126,7 @@ const SinglePost = (props) => {
 				</div>
 			)
 		}
-	}
+	}*/
 
 	//Renders the image if there is any
 	const renderImage = (image) => {
@@ -214,11 +161,11 @@ const SinglePost = (props) => {
 		}
 	}
 
-	const enableCommentEdit = (comment, index) => {
+	/*const enableCommentEdit = (comment, index) => {
 		if (user_storage.id === comment.author._id) {
 			return (
 				<div className='round-div'>
-					<button type="button" className="edit-button" id={comment._id + index} onClick={showEditOptionsC}>&#9998;</button>
+					<button type="button" className="edit-button" id={comment._id + 'id=' +index} onClick={showEditOptionsC}>&#9998;</button>
 					<div className='comment-options' ref={el => commentOptionsRef.current[index] = el}>
 						<div onClick={showEditForm}>
 							<p>Edit</p>
@@ -230,14 +177,17 @@ const SinglePost = (props) => {
 				</div>
 			)
 		}
+	}*/
+
+	const showForm = (form) => {
+		props.selectForm(form)
+		props.formRef.current.classList.add("show-c")
+		optionsRef.current.classList.remove("show-c")
+		document.body.classList.add("not-scrollable")
 	}
 
 	const showEditForm = () => {
-		console.log(props.post.content)
-		props.selectForm('Edit')
-		props.formRef.current.classList.add("show-c")
-		optionsRef.current.classList.remove("show-c")
-		document.body.classList.add("not-scrollable");
+		showForm('Edit')
 		props.setFormData(
 			{
 				title: 'Edit',
@@ -252,10 +202,7 @@ const SinglePost = (props) => {
 	}
 
 	const showDeleteForm = () => {
-		props.selectForm('Delete')
-		props.formRef.current.classList.add("show-c")
-		optionsRef.current.classList.remove("show-c")
-		document.body.classList.add("not-scrollable");
+		showForm('Delete')
 		props.setFormData(
 			{
 				title: 'Delete',
@@ -284,10 +231,11 @@ const SinglePost = (props) => {
 	}
 
 	//Shows the comment edit options
-	const showEditOptionsC = (e) => {
+	/*const showEditOptionsC = (e) => {
 		const items = Array.from(document.getElementsByClassName("comment-options"))
 
-		const index = e.target.id.slice(-1)
+		const symbol = e.target.id.indexOf('=')
+		const index = e.target.id.slice(symbol+1)
 		
 		if (commentOptionsRef.current[index].classList.contains("show-c")) {
 			commentOptionsRef.current[index].classList.remove("show-c")
@@ -299,7 +247,7 @@ const SinglePost = (props) => {
 			}
 			commentOptionsRef.current[index].classList.add("show-c")
 		}
-	}
+	}*/
 
 	//Hides the post edit options when the user clicks elsewhere
 	const hideEditOptions = (e) => {
@@ -338,26 +286,16 @@ const SinglePost = (props) => {
 					{post.content}
 				</div>
 				{renderImage(post.image)}
-				{renderLikes(post)}
-				{renderCountedComments(post)}
+				{renderLikesCount(post)}
+				{renderCommentsCount(post)}
 				<div className='like' onClick={likePost}>
 					<h4>Like</h4>
 				</div>
 				<div className='comment' onClick={showCommentForm}>
 					<h4>Comment</h4>
 				</div>
-				<div className='comment-form' ref={formRef}>
-					<form onSubmit={commentPost}>
-						<div className='pic-div'>
-							<img src={post.author.pic} className='profile-pic' alt="profile-pic" />
-							<textarea name='content' rows="1" className="auto_height" placeholder='Write a comment...' onInput={adjustHeight} onKeyDown={enterComment} required></textarea>
-						</div>
-						<div className='full-height'>
-							<button type='submit' id='commentPost' className='blue-button' disabled={isFetching}>Submit</button>
-						</div>
-					</form>
-				</div>
-				{renderComments(post)}
+				<CommentForm comments={comments} setComments={setComments} formRef={formRef} post={post} setPost={setPost} token={props.token} user_storage={user_storage}/>
+				<PostComments post={post} user_storage={user_storage} commentsRef={commentsRef} showForm={showForm} setFormData={props.setFormData}/>
 			</div>
 		)
 	}

@@ -177,7 +177,7 @@ const PostForm = (props) => {
     cloudinaryUpload(uploadData).then((response) => console.log(response.secure_url))
   }*/
 
-	const auto_height = (e) => {
+	const adjustHeight = (e) => {
 		if (e) {
 			e.target.style.height = "1px";
 			e.target.style.height = (e.target.scrollHeight)+"px";
@@ -204,7 +204,7 @@ const PostForm = (props) => {
 					</div>
 					<div className="pic-div">
 						<img src={user_storage.pic} alt="profile-pic" className="profile-pic" />
-						<textarea name="content" rows="1" className="auto_height" placeholder="What are you thinking?" onInput={auto_height} ref={textRef} required></textarea>
+						<textarea name="content" rows="1" className="auto_height" placeholder="What are you thinking?" onInput={adjustHeight} ref={textRef} required></textarea>
 					</div>
 					<div className="form-image">
 						<label htmlFor="input-image" className='custom-file-upload'>

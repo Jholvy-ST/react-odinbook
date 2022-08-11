@@ -50,31 +50,6 @@ const UserPosts = (props) => {
 		}
 	}
 
-	/*const fetchPosts = async () => {
-		try {
-			const user = JSON.parse(localStorage.getItem('user_data'));
-			const payload = { id: user.id }
-			const response = await fetch('https://agile-springs-89726.herokuapp.com/home/user-posts', { 
-				method: 'POST',	
-				mode: 'cors',
-				headers: {
-					"Content-Type": "application/json",
-					Accept: "application/json",
-					Authorization: `Bearer ${props.token}`
-				},
-				body: JSON.stringify(payload)
-			});
-			const postData = await response.json();
-	
-			const arrangedPosts = await attachComments(orderPosts(postData))
-			setPosts(arrangedPosts);
-			console.log(postData)
-			
-		} catch (error) {
-			console.log(error)
-		}
-	}*/
-
 	const orderPosts = (posts) => {
 		const allPosts = []
 
@@ -152,7 +127,8 @@ const UserPosts = (props) => {
 		props.setFormData(
 			{
 				title: 'Change profile picture',
-				action: 'comment',
+				action: 'change-profile-picture',
+				type: 'picture',
 				payload: {
 					id: data.user._id,
 					pic: data.user.pic
@@ -167,9 +143,9 @@ const UserPosts = (props) => {
 
 	const renderTab = (data) => {
 		if (tab === 'Posts') {
-			return <SpecificPosts posts={data.posts} formRef={props.formRef} mainRef={props.mainRef} setFormData={props.setFormData} selectForm={props.selectForm}/>
+			return <SpecificPosts user={props.user} posts={data.posts} formRef={props.formRef} mainRef={props.mainRef} setFormData={props.setFormData} selectForm={props.selectForm}/>
 		} else if (tab === 'Friends') {
-			return <Friends friends={data.user.friends} token={props.token} reload={reload} setReload={setReload} />
+			return <Friends friends={data.user.friends} token={props.token} reload={reload} setReload={setReload} formRef={props.formRef} setFormData={props.setFormData} selectForm={props.selectForm}/>
 		}
 
 		return <Requests requests={data.user.requests} token={props.token} reload={reload} setReload={setReload}/>

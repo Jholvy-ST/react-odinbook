@@ -3,14 +3,9 @@ import { useState, useRef } from 'react';
 
 const CommentForm = (props) => {
 	const [isFetching, setFetching] = useState(false)
-	//const [content, setContent] = useState('')
-
+	
 	const submitRef = useRef();
 
-	/*const contentHandler = (e) => {
-		setContent(e.target.value)
-	}*/
-	
 	//Sumbits a comment
 	const commentPost = async (e) => {
 		e.preventDefault();
@@ -56,13 +51,21 @@ const CommentForm = (props) => {
 		if (e) {
 			e.target.style.height = "1px";
 			e.target.style.height = (e.target.scrollHeight)+"px";
-
-			if (e.target.value.replace(/\s/g, '').length) {
-				submitRef.current.classList.add("show-c")
-			} else {
-				submitRef.current.classList.remove("show-c")
-			}
 		}
+	}
+
+	//Checks that the textarea is not empty
+	const checkEmpty = (string) => {
+		if (string.replace(/\s/g, '').length) {
+			submitRef.current.classList.add("show-c")
+		} else {
+			submitRef.current.classList.remove("show-c")
+		}
+	}
+
+	const controlContent = (e) => {
+		adjustHeight(e)
+		checkEmpty(e.target.value)
 	}
 
 	return (
@@ -70,7 +73,7 @@ const CommentForm = (props) => {
 			<form onSubmit={commentPost}>
 				<div className='pic-div'>
 					<img src={props.post.author.pic} className='profile-pic' alt="profile-pic" />
-					<textarea name='content' rows="1" className="auto_height" placeholder='Write a comment...' onInput={adjustHeight} onKeyDown={enterComment}></textarea>
+					<textarea name='content' rows="1" className="auto_height" placeholder='Write a comment...' onInput={controlContent} onKeyDown={enterComment}></textarea>
 				</div>
 				<div className='full-height'>
 					<button type='submit' id='submitPost' className='blue-button post-button' disabled={isFetching} ref={submitRef}>Submit</button>

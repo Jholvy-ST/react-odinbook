@@ -313,7 +313,7 @@ a:-webkit-any-link {
 }
 
 .form-image {
-	display: flex;
+	display: none;
 	flex-direction: column;
 	row-gap: 5px;
 	position: relative;
@@ -515,6 +515,7 @@ a:-webkit-any-link {
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
+	column-gap: 5rem;
 	padding: 15px;
 	border-radius: 10px;
 	background-color: rgb(53, 52, 54);
@@ -604,7 +605,7 @@ a:-webkit-any-link {
 	border-radius: 50%;
 }
 
-.friend-div {
+.user-div {
 	display: flex;
 	column-gap: 0.7rem;
 	align-items: center;

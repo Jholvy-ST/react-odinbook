@@ -114,13 +114,6 @@ const AllPosts = (props) => {
 		return ordered
 	}
 
-	/*const auto_height = (elem) => {
-		if (elem) {
-			elem.target.style.height = "1px";
-			elem.target.style.height = (elem.target.scrollHeight)+"px";
-		}
-	}*/
-
 	//Gets the comments of a single post
 	const fetchComments = async (id) => {
 		try {
@@ -164,63 +157,12 @@ const AllPosts = (props) => {
 		})*/
 	}
 
-	/*const showComments = (post) => {
-		if (post.comments.length > 0) {
-			return (
-				<div className='comments'>
-					{post.comments.map(comment => 
-						<div key={comment._id}>
-							<h4>{comment.author.name}</h4>
-							<p>{comment.content}</p>
-						</div>	
-					)}
-				</div>
-			)
-		}
-	}*/
-
-	/*if (posts.length > 0) {
-		return (
-			<div className='posts-container'>
-				<div>
-					<h3>Posts</h3>
-				</div>
-					{posts.map((post, i) => 
-						<div key={post._id + post.author} className='post'>
-							<div className='post-author'>
-								<img src={post.author.pic} alt="profile-pic" />
-								<h4>{post.author.name}</h4>
-							</div>
-							<div className='post-content'>
-								<Link to={`posts/${post._id}`} state={{value: post}}>
-									
-									{post.content}
-								</Link>
-							</div>
-							<div className='like'>
-								<h4>Like</h4>
-							</div>
-							<div className='comment'>
-								<h4>Comment</h4>
-							</div>
-							<div className='comment-form'>
-								<form>
-									<textarea rows="1" className="auto_height" onInput={auto_height}></textarea>
-								</form>
-							</div>
-							{showComments(post)}
-						</div>
-					)}
-			</div>
-		)
-	}*/
-
 	const renderFriends = () => {
 		if (isDesktop) {
 			return (
 				<div className='side-bar'>
 					<h3>Friends</h3>
-					<Friends token={props.token} friends={friends}/>
+					<Friends token={props.token} friends={friends} formRef={props.formRef} setFormData={props.setFormData} selectForm={props.selectForm}/>
 				</div>
 			)
 		}
@@ -236,7 +178,7 @@ const AllPosts = (props) => {
 						<h3>Posts</h3>
 					</div>
 					<div>
-						<CreatePost fetchPosts={fetchPosts} token={props.token} formRef={props.formRef} setFormData={props.setFormData} selectForm={props.selectForm}/>
+						<CreatePost formRef={props.formRef} setFormData={props.setFormData} selectForm={props.selectForm}/>
 					</div>
 					{posts.map((post) => 
 						<SinglePost post={post} token={props.token} key={post._id} formRef={props.formRef} mainRef={props.mainRef} setFormData={props.setFormData} selectForm={props.selectForm}/>

@@ -54,8 +54,6 @@ const Users = (props) => {
 			}
 		}
 
-		console.log(toEliminate)
-
 		for (let i = 0; i < toEliminate.length; i++) {
 			for (let j = 0; j < user_list.length; j++) {
 				if (user_list[j]._id === toEliminate[i]) {
@@ -105,8 +103,6 @@ const Users = (props) => {
 			}
 		}
 
-		console.log(toEliminate)
-
 		for (let i = 0; i < toEliminate.length; i++) {
 			for (let j = 0; j < user_list.length; j++) {
 				const index = user_list.indexOf(toEliminate[i]);
@@ -142,24 +138,28 @@ const Users = (props) => {
 
 	if (users.length > 0) {
 		return (
-			<div className="users-container">
-				<div>
-					<h3>Users</h3>
+			<div className="main-page">
+				<div className="users-container">
+					<div>
+						<h3>Users</h3>
+					</div>
+					{users.map((user) => 
+						<form className="user" key={user._id} onSubmit={sendFriendReq}>
+							<div className="user-div">
+								<img src={user.pic} alt="profile-pic" />
+								{user.name}
+							</div>
+							<div className="user-id">
+								<input type="text" name='user_id' defaultValue={user._id}/>
+							</div>
+							<div>
+								<button className="blue-button">Add friend</button>
+							</div>
+						</form>
+					)}
 				</div>
-				{users.map((user) => 
-					<form className="user" key={user._id} onSubmit={sendFriendReq}>
-						<div>
-							{user.name}
-						</div>
-						<div className="user-id">
-							<input type="text" name='user_id' defaultValue={user._id}/>
-						</div>
-						<div>
-							<button className="blue-button">Add friend</button>
-						</div>
-					</form>
-				)}
 			</div>
+			
 		)
 	}
 

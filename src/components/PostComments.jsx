@@ -7,12 +7,12 @@ const PostComments = (props) => {
 		if (props.user_storage.id === comment.author._id) {
 			return (
 				<div className='round-div'>
-					<button type="button" className="edit-button" id={comment._id + 'id=' +index} onClick={showEditOptionsC}>&#9998;</button>
+					<button type="button" className="edit-button" id={comment._id + 'id=' +index} onClick={() => showEditOptionsC(index)}>&#9998;</button>
 					<div className='comment-options' ref={el => commentOptionsRef.current[index] = el}>
 						<div onClick={() => showCommentEditForm(comment)}>
 							<p>Edit</p>
 						</div>
-						<div onClick={() => showCommentEditForm(comment)}>
+						<div onClick={() => showCommentDeleteForm(comment)}>
 							<p>Delete</p>
 						</div>
 					</div>
@@ -22,11 +22,8 @@ const PostComments = (props) => {
 	}
 	
 	//Shows the comment edit options
-	const showEditOptionsC = (e) => {
+	const showEditOptionsC = (index) => {
 		const items = Array.from(document.getElementsByClassName("comment-options"))
-
-		const symbol = e.target.id.indexOf('=')
-		const index = e.target.id.slice(symbol+1)
 		
 		if (commentOptionsRef.current[index].classList.contains("show-c")) {
 			commentOptionsRef.current[index].classList.remove("show-c")
@@ -44,11 +41,24 @@ const PostComments = (props) => {
 		props.showForm('Edit')
 		props.setFormData(
 			{
-				title: 'Edit',
+				title: 'Edit comment',
 				action: 'edit-comment',
 				payload: {
 					id: comment._id,
 					content: comment.content
+				}
+			}
+		)
+	}
+
+	const showCommentDeleteForm = (comment) => {
+		props.showForm('Delete')
+		props.setFormData(
+			{
+				message: 'delete this comment',
+				action: 'delete-comment',
+				payload: {
+					id: comment._id
 				}
 			}
 		)

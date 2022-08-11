@@ -5,6 +5,8 @@ const Friends = (props) => {
 	const [isLoading, setLoading] = useState(true)
 	const [friends, setFriends] = useState([])
 
+	const user_storage = JSON.parse(localStorage.getItem('user_data'))
+
 	useEffect(() => {
 		getFriends()
 	}, [props.friends])
@@ -25,7 +27,6 @@ const Friends = (props) => {
 				body: JSON.stringify(payload)
 			});
 			const userData = await response.json();
-			console.log(userData)
 			return userData.user
 			
 		} catch (error) {
@@ -45,31 +46,20 @@ const Friends = (props) => {
 		setFriends(friends_list)
 	}
 
-	//POST request to delete a friend
-	const deleteFriend = async (e) => {
-		try {
-			const user = JSON.parse(localStorage.getItem('user_data'))
-			const payload = { id: user.id, friend: e.target.id }
-			const response = await fetch('https://agile-springs-89726.herokuapp.com/home/delete-friend', { 
-				method: 'POST',	
-				mode: 'cors',
-				headers: {
-					"Content-Type": "application/json",
-					Accept: "application/json",
-					Authorization: `Bearer ${props.token}`
-				},
-				body: JSON.stringify(payload)
-			});
-			props.setReload(props.reload + 1)
-		} catch (error) {
-			console.log(error)
-		}
+	const showFriendDeleteForm = (friend) => {
+		props.selectForm('Delete')
+		props.formRef.current.classList.add("show-c")
+		props.setFormData(
+			{
+				message: 'delete this friend',
+				action: 'delete-friend',
+				payload: {
+					id: user_storage.id,
+					friend: friend._id
+				}
+			}
+		)
 	}
-
-	/*const changePage = (url) => {
-		navigate(url, { replace: true });
-		window.location.reload();
-	}*/
 	
 	//Checks if the data is loaded before rendering the content
 	if (!isLoading) {
@@ -77,13 +67,13 @@ const Friends = (props) => {
 			<div className='friends-container'>
 				{friends.map(friend => 
 					<div key={friend._id} className="friend">
-						<div className="friend-div">
+						<div className="user-div">
 							<img src={friend.pic} alt="profile-pic" />
 							<Link to={`../user/${friend._id}`} className='linkD' onClick={() => changeLocation()}>
 								{friend.name}
 							</Link>
 						</div>
-						<button className="grey-button" id={friend._id} onClick={deleteFriend}>Delete</button>
+						<button className="grey-button" id={friend._id} onClick={() => showFriendDeleteForm(friend)}>Delete</button>
 					</div>
 				)}
 			</div>

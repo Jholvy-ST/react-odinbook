@@ -13,6 +13,7 @@ function App() {
 	const [time, setTime] = useState(0)
 	const [posts, setPosts] = useState(0)
   const [token, setToken] = useState(false)
+	const [user, setUser] = useState(false)
 	const [form, setForm] = useState('Edit')
 	const [formData, setFormData] = useState({payload: { content: '' }})
 
@@ -29,12 +30,41 @@ function App() {
 		}
 		
 		
-		const user = JSON.parse(localStorage.getItem('user_data'));
-		if (user) {
-			console.log(user)
-			setToken(user.token)
+		const user_storage = JSON.parse(localStorage.getItem('user_data'));
+		if (user_storage) {
+			console.log(user_storage)
+			setToken(user_storage.token)
+			fetchUser()
 		}
 	}, [time])
+
+	//Loads the data of the user once
+	/*useEffect(() => {
+		const user_storage = JSON.parse(localStorage.getItem('user_data'));
+		if (user_storage) {
+			fetchUser()
+		}
+	}, [time])*/
+
+	//Gets the data of the current user from the server
+	const fetchUser = async () => {
+		const user = JSON.parse(localStorage.getItem('user_data'));
+		const payload = { id: user.id }
+		const response = await fetch(`https://agile-springs-89726.herokuapp.com/home/users/${user.id}`, {
+			method: 'POST',
+			mode: 'cors',
+			headers: {
+				"Content-Type": "application/json",
+				Accept: "application/json",
+				Authorization: `Bearer ${user.token}`
+			},
+			body: JSON.stringify(payload)
+		});
+
+		const data = await response.json();
+		console.log(data)
+		setUser(data.user)
+	}
 
 	//Reloads the content when there is a submit
 	const getPosts = () => {
@@ -59,11 +89,11 @@ function App() {
 			return (
 				<Router>
 					<div className='main-container' ref={mainRef}>
-						<Nav getToken={getToken}/>
-						<PostForm formRef={formRef} posts={posts} getPosts={getPosts} formData={formData} mainRef={mainRef} form={form}/>
+						<Nav getToken={getToken} user={user}/>
+						<PostForm user={user} setUser={setUser} formRef={formRef} posts={posts} getPosts={getPosts} formData={formData} mainRef={mainRef} form={form}/>
 						<Routes>
-							<Route path='/' index element={<AllPosts token={token} formRef={formRef} mainRef={mainRef} posts={posts} getPosts={getPosts} setFormData={setFormData} selectForm={selectForm}/>}/>
-							<Route path='/user/:id' element={<UserPosts token={token} formRef={formRef} mainRef={mainRef} setFormData={setFormData} selectForm={selectForm} posts={posts}/>}/>
+							<Route path='/' index element={<AllPosts user={user} token={token} formRef={formRef} mainRef={mainRef} posts={posts} getPosts={getPosts} setFormData={setFormData} selectForm={selectForm}/>}/>
+							<Route path='/user/:id' element={<UserPosts user={user} token={token} formRef={formRef} mainRef={mainRef} setFormData={setFormData} selectForm={selectForm} posts={posts}/>}/>
 							<Route path='/users' element={<Users token={token}/>}/>
 						</Routes>
 					</div>

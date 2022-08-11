@@ -5,7 +5,6 @@ import CommentForm from './CommentForm';
 import PostComments from './PostComments';
 
 const SinglePost = (props) => {
-	console.log('Re-render')
 
 	const [post, setPost] = useState(props.post)
 	const [comments, setComments] = useState(props.post.comments) 
@@ -106,28 +105,6 @@ const SinglePost = (props) => {
 		}
 	}
 
-	//Renders the comments if there is any (by default the comments are hidden)
-	/*const renderComments = (post) => {
-		if (post.comments.length > 0) {
-			return (
-				<div className='comments' ref={commentsRef}>
-					{post.comments.map((comment, i) => 
-						<div className='single-comment' key={comment._id}>
-							<div>
-								<img src={comment.author.pic} alt="profile-pic" className='profile-pic'/>
-							</div>
-							<div className='comment-text'>
-								<h4>{comment.author.name}</h4>
-								<p>{comment.content}</p>
-							</div>	
-							{enableCommentEdit(comment, i)}
-						</div>
-					)}
-				</div>
-			)
-		}
-	}*/
-
 	//Renders the image if there is any
 	const renderImage = (image) => {
 		if (image) {
@@ -161,24 +138,6 @@ const SinglePost = (props) => {
 		}
 	}
 
-	/*const enableCommentEdit = (comment, index) => {
-		if (user_storage.id === comment.author._id) {
-			return (
-				<div className='round-div'>
-					<button type="button" className="edit-button" id={comment._id + 'id=' +index} onClick={showEditOptionsC}>&#9998;</button>
-					<div className='comment-options' ref={el => commentOptionsRef.current[index] = el}>
-						<div onClick={showEditForm}>
-							<p>Edit</p>
-						</div>
-						<div onClick={showDeleteForm}>
-							<p>Delete</p>
-						</div>
-					</div>
-				</div>
-			)
-		}
-	}*/
-
 	const showForm = (form) => {
 		props.selectForm(form)
 		props.formRef.current.classList.add("show-c")
@@ -190,7 +149,8 @@ const SinglePost = (props) => {
 		showForm('Edit')
 		props.setFormData(
 			{
-				title: 'Edit',
+				title: 'Edit post',
+				type: 'post',
 				action: 'edit-post',
 				payload: {
 					id: props.post._id,
@@ -205,7 +165,7 @@ const SinglePost = (props) => {
 		showForm('Delete')
 		props.setFormData(
 			{
-				title: 'Delete',
+				message: 'delete this post',
 				action: 'delete-post',
 				payload: {
 					id: props.post._id,
@@ -229,25 +189,6 @@ const SinglePost = (props) => {
 			optionsRef.current.classList.add("show-c")
 		}
 	}
-
-	//Shows the comment edit options
-	/*const showEditOptionsC = (e) => {
-		const items = Array.from(document.getElementsByClassName("comment-options"))
-
-		const symbol = e.target.id.indexOf('=')
-		const index = e.target.id.slice(symbol+1)
-		
-		if (commentOptionsRef.current[index].classList.contains("show-c")) {
-			commentOptionsRef.current[index].classList.remove("show-c")
-		} else {
-			for (let i = 0; i < items.length; i++) {
-				if (items[i].classList.contains("show-c")) {
-					items[i].classList.remove("show-c")
-				}
-			}
-			commentOptionsRef.current[index].classList.add("show-c")
-		}
-	}*/
 
 	//Hides the post edit options when the user clicks elsewhere
 	const hideEditOptions = (e) => {

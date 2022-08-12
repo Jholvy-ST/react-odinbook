@@ -599,6 +599,14 @@ a:-webkit-any-link {
 	column-gap: 10px;
 }
 
+.user-data>div>i {
+	height: 1rem;
+	width: 1rem;
+	position: absolute;
+	transform: translate(-150%, 450%);
+	border-radius: 50%;
+}
+
 .user-data>div>img {
 	height: 6rem;
 	width: 6rem;

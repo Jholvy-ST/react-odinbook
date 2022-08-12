@@ -108,6 +108,7 @@ const UserPosts = (props) => {
 			return (
 				<div onClick={showProfileForm} style={{cursor: "pointer"}}>
 					<img src={data.user.pic} alt="current-user-pic" />
+					<i className="fa fa-2x fa-camera"></i>
 				</div>
 			)
 		}

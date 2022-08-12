@@ -18,3 +18,6 @@ Project created with:
 - The User Show page contains their profile information, profile photo and posts.
 - The Users Index page lists all users and buttons for sending friend requests to those who are not already friends or who don’t already have a pending request.
 - Guest mode functionality
+
+## License
+Licensed under the MIT license

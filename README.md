@@ -2,7 +2,7 @@
 Simple Facebook copy written in React
 
 ## General info
-This is the front-end part of a Facebook copy, and it works by getting the data from a REST API hosted on Heroku.
+This is the front-end part of a Facebook copy, and it works by getting the data from a [REST API](https://github.com/Jholvy-ST/odinbook) hosted on Heroku.
 
 ## Technologies
 Project created with:
